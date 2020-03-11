@@ -1,0 +1,339 @@
+---------DATABASE CREATION----------------
+
+mysql> CREATE DATABASE problemset02;
+Query OK, 1 row affected (0.42 sec)
+
+mysql> USE problemset02;
+Database changed
+
+---------TABLE CREATION-------------------
+
+mysql> CREATE TABLE Location (locationid INT PRIMARY KEY, name VARCHAR(30), sunlight FLOAT, water FLOAT);
+Query OK, 0 rows affected (0.41 sec)
+
+mysql> CREATE TABLE Gardener (gardenerid INT PRIMARY KEY, name VARCHAR(30), age INT);
+Query OK, 0 rows affected (0.52 sec)
+
+mysql> CREATE TABLE Plant (plantid INT PRIMARY KEY, name VARCHAR(30), sunlight FLOAT, water FLOAT, weight FLOAT);
+Query OK, 0 rows affected (0.69 sec)
+
+mysql> CREATE TABLE planted (plantFK INT, gardenerFK INT, locationFK INT, date1 DATE, seeds INT, FOREIGN KEY(plantFK) REFERENCES plant(plantid), FOREIGN KEY(gardenerFK) REFERENCES gardener(gardenerid), FOREIGN KEY(locationFK) REFERENCES location(locationid));
+Query OK, 0 rows affected (0.73 sec)
+
+mysql> CREATE TABLE picked (plantFK INT, gardenerFK INT, locationFK INT, date1 DATE, amount INT, weight FLOAT, FOREIGN KEY(plantFK) REFERENCES plant(plantid), FOREIGN KEY(gardenerFK) REFERENCES gardener(gardenerid), FOREIGN KEY(locationFK) REFERENCES location(locationid));
+Query OK, 0 rows affected (1.36 sec)
+
+
+---------VALUE INSERTION-----------------
+
+mysql> INSERT INTO location VALUES(0, "East", .28, .80);
+Query OK, 1 row affected (0.11 sec)
+
+mysql> INSERT INTO location VALUES(1, "North", .17, .84);
+Query OK, 1 row affected (0.09 sec)
+
+mysql> INSERT INTO location VALUES(2, "West", .38, .48);
+Query OK, 1 row affected (0.15 sec)
+
+mysql> INSERT INTO location VALUES(3, "South", .45, .66);
+Query OK, 1 row affected (0.12 sec)
+
+mysql> SELECT * FROM location;
++------------+-------+----------+-------+
+| locationid | name  | sunlight | water |
++------------+-------+----------+-------+
+|          0 | East  |     0.28 |   0.8 |
+|          1 | North |     0.17 |  0.84 |
+|          2 | West  |     0.38 |  0.48 |
+|          3 | South |     0.45 |  0.66 |
++------------+-------+----------+-------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> INSERT INTO gardener VALUES(0, "Mother", 36);
+Query OK, 1 row affected (0.35 sec)
+
+mysql> INSERT INTO gardener VALUES(1, "Father", 38);
+Query OK, 1 row affected (0.16 sec)
+
+mysql> INSERT INTO gardener VALUES(2, "Tim", 15);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO gardener VALUES(3, "Erin", 12);
+Query OK, 1 row affected (0.09 sec)
+
+mysql> SELECT * FROM gardener;
++------------+--------+------+
+| gardenerid | name   | age  |
++------------+--------+------+
+|          0 | Mother |   36 |
+|          1 | Father |   38 |
+|          2 | Tim    |   15 |
+|          3 | Erin   |   12 |
++------------+--------+------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> INSERT INTO plant VALUES(0, "Carrot", .26, .82, .08);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO plant VALUES(1, "Beet", .44, .80, .04);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> INSERT INTO plant VALUES(2, "Corn", .44, .76, .26);
+Query OK, 1 row affected (0.09 sec)
+
+mysql> INSERT INTO plant VALUES(3, "Tomato", .42, .80, .16);
+Query OK, 1 row affected (0.21 sec)
+
+mysql> INSERT INTO plant VALUES(4, "Radish", .28, .84, .02);
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO plant VALUES(5, "Lettuce", .29, .85, .03);
+Query OK, 1 row affected (0.15 sec)
+
+mysql> SELECT * FROM plant;
++---------+---------+----------+-------+--------+
+| plantid | name    | sunlight | water | weight |
++---------+---------+----------+-------+--------+
+|       0 | Carrot  |     0.26 |  0.82 |   0.08 |
+|       1 | Beet    |     0.44 |   0.8 |   0.04 |
+|       2 | Corn    |     0.44 |  0.76 |   0.26 |
+|       3 | Tomato  |     0.42 |   0.8 |   0.16 |
+|       4 | Radish  |     0.28 |  0.84 |   0.02 |
+|       5 | Lettuce |     0.29 |  0.85 |   0.03 |
++---------+---------+----------+-------+--------+
+6 rows in set (0.00 sec)
+
+
+
+
+mysql> INSERT INTO planted VALUES(0, 0, 0 , "20120418", 28);
+Query OK, 1 row affected (0.09 sec)
+
+mysql> INSERT INTO planted VALUES(0, 1, 1, "20120414", 14);
+Query OK, 1 row affected (0.15 sec)
+
+mysql> INSERT INTO planted VALUES(1, 0, 2, "20120418", 36);
+Query OK, 1 row affected (0.14 sec)
+
+mysql> INSERT INTO planted VALUES(2, 1, 3, "20120414", 20);
+Query OK, 1 row affected (0.11 sec)
+
+mysql> INSERT INTO planted VALUES(2, 2, 2, "20120419", 12);
+Query OK, 1 row affected (0.08 sec)
+
+mysql> INSERT INTO planted VALUES(3, 3, 3, "20120425", 38);
+Query OK, 1 row affected (0.17 sec)
+
+mysql> INSERT INTO planted VALUES(4, 2, 0, "20120430", 30);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> INSERT INTO planted VALUES(5, 2, 0, "20120415", 30);
+Query OK, 1 row affected (0.14 sec)
+
+mysql> SELECT * FROM planted;
++---------+------------+------------+------------+-------+
+| plantFK | gardenerFK | locationFK | date1      | seeds |
++---------+------------+------------+------------+-------+
+|       0 |          0 |          0 | 2012-04-18 |    28 |
+|       0 |          1 |          1 | 2012-04-14 |    14 |
+|       1 |          0 |          2 | 2012-04-18 |    36 |
+|       2 |          1 |          3 | 2012-04-14 |    20 |
+|       2 |          2 |          2 | 2012-04-19 |    12 |
+|       3 |          3 |          3 | 2012-04-25 |    38 |
+|       4 |          2 |          0 | 2012-04-30 |    30 |
+|       5 |          2 |          0 | 2012-04-15 |    30 |
++---------+------------+------------+------------+-------+
+8 rows in set (0.00 sec)
+
+
+
+
+mysql> INSERT INTO picked VALUES(0, 2, 0 ,"20120818", 28, 2.32);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> INSERT INTO picked VALUES(0, 3, 1 ,"20120816", 12, 1.02);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> INSERT INTO picked VALUES(2, 1, 3 ,"20120822", 52, 12.96);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO picked VALUES(2, 2, 2 ,"20120828", 18, 4.58);
+Query OK, 1 row affected (0.36 sec)
+
+mysql> INSERT INTO picked VALUES(3, 3, 3 ,"20120822", 15, 3.84);
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO picked VALUES(4, 2, 0 ,"20120716", 23, 0.52);
+Query OK, 1 row affected (0.14 sec)
+
+mysql> SELECT * FROM picked;
++---------+------------+------------+------------+--------+--------+
+| plantFK | gardenerFK | locationFK | date1      | amount | weight |
++---------+------------+------------+------------+--------+--------+
+|       0 |          2 |          0 | 2012-08-18 |     28 |   2.32 |
+|       0 |          3 |          1 | 2012-08-16 |     12 |   1.02 |
+|       2 |          1 |          3 | 2012-08-22 |     52 |  12.96 |
+|       2 |          2 |          2 | 2012-08-28 |     18 |   4.58 |
+|       3 |          3 |          3 | 2012-08-22 |     15 |   3.84 |
+|       4 |          2 |          0 | 2012-07-16 |     23 |   0.52 |
++---------+------------+------------+------------+--------+--------+
+6 rows in set (0.01 sec)
+
+-------------------------------QUERIES--------------------------------------------
+
+1. Write a valid SQL statement that calculates the total weight of all corn cobs that were picked from the garden.
+
+mysql> SELECT sum(picked.weight) FROM picked JOIN plant ON picked.plantFK=plant.plantid WHERE plant.name="Corn";
++--------------------+
+| sum(picked.weight) |
++--------------------+
+| 17.539999961853027 |
++--------------------+
+1 row in set (0.01 sec)
+
+***********************************************************************************************************************************************************************
+
+2. For some reason Erin has change his location for picking the tomato to North. Write the corresponding query.
+
+mysql> UPDATE picked SET locationFk = (SELECT locationid FROM location WHERE name="North") WHERE gardenerFK = (SELECT gardenerid FROM gardener WHERE name="Erin") AND plantFK IN (SELECT plantid FROM plant WHERE name="Tomato");
+Query OK, 1 row affected (0.11 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+***********************************************************************************************************************************************************************
+
+3. Insert a new column 'Exper' of type Number (30) to the 'gardener' table which stores Experience of the of person. How will you modify this to varchar2(30).
+
+mysql> ALTER TABLE gardener ADD COLUMN Exper INT(30);
+Query OK, 0 rows affected, 1 warning (1.51 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> DESC gardener;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| gardenerid | int         | NO   | PRI | NULL    |       |
+| name       | varchar(30) | YES  |     | NULL    |       |
+| age        | int         | YES  |     | NULL    |       |
+| Exper      | int         | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.07 sec)
+
+mysql> ALTER TABLE gardener MODIFY COLUMN Exper VARCHAR(30);
+Query OK, 4 rows affected (2.27 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> DESC gardener;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| gardenerid | int         | NO   | PRI | NULL    |       |
+| name       | varchar(30) | YES  |     | NULL    |       |
+| age        | int         | YES  |     | NULL    |       |
+| Exper      | varchar(30) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+***********************************************************************************************************************************************************************
+
+4. Write a query to find the plant name which required seeds less than 20 which plant on 14-APR
+
+mysql> SELECT name FROM plant WHERE plantid IN (SELECT plantFK FROM planted WHERE date1="20120414" AND seeds <20);
++--------+
+| name   |
++--------+
+| Carrot |
++--------+
+1 row in set (0.00 sec)
+
+
+***********************************************************************************************************************************************************************
+
+5. List the amount of sunlight and water to all plants with names that start with letter 'c' or letter 'r'
+
+mysql> SELECT sunlight,water FROM plant WHERE name LIKE "c%" OR name LIKE "r%";
++----------+-------+
+| sunlight | water |
++----------+-------+
+|     0.26 |  0.82 |
+|     0.44 |  0.76 |
+|     0.28 |  0.84 |
++----------+-------+
+3 rows in set (0.00 sec)
+
+***********************************************************************************************************************************************************************
+
+6. Write a valid SQL statement that displays the plant name and the total amount of seed required for each plant that were plant in the garden. The output should be in descending order of plant name.
+
+mysql> SELECT name,SUM(seeds) FROM plant JOIN planted ON plant.plantid=planted.plantFK GROUP BY  name ORDER BY name DESC;
++---------+------------+
+| name    | SUM(seeds) |
++---------+------------+
+| Tomato  |         38 |
+| Radish  |         30 |
+| Lettuce |         30 |
+| Corn    |         32 |
+| Carrot  |         42 |
+| Beet    |         36 |
++---------+------------+
+6 rows in set (0.00 sec)
+
+
+***********************************************************************************************************************************************************************
+
+7. Write a valid SQL statement that calculates the average number of items produced per seed planted for each plant type:( (Average Number of Items = Total Amount Picked / Total Seeds Planted.)
+
+mysql> SELECT amount/seeds AS AvgItemsProduced,name FROM picked p,planted p1,plant p2 WHERE p2.plantid=p.plantFK AND p2.plantid=p1.plantFK GROUP BY name;
++------------------+--------+
+| AvgItemsProduced | name   |
++------------------+--------+
+|           1.0000 | Carrot |
+|           2.6000 | Corn   |
+|           0.3947 | Tomato |
+|           0.7667 | Radish |
++------------------+--------+
+4 rows in set (0.00 sec)
+
+***********************************************************************************************************************************************************************
+
+
+8. Write a valid SQL statement that would produce a result set like the following:
+
+mysql> SELECT g.name,p.name,pi.date1,pi.amount FROM picked pi LEFT OUTER JOIN plant p ON p.plantid=pi.plantfk LEFT OUTER JOIN location l ON l.locationid=pi.locationfk LEFT OUTER JOIN gardener g ON g.gardenerid=pi.gardenerfk WHERE l.name='East' AND g.name='Tim';
++------+--------+------------+--------+
+| name | name   | date1      | amount |
++------+--------+------------+--------+
+| Tim  | Carrot | 2012-08-18 |     28 |
+| Tim  | Radish | 2012-07-16 |     23 |
++------+--------+------------+--------+
+2 rows in set (0.00 sec)
+
+
+***********************************************************************************************************************************************************************
+
+9. Find out persons who picked from the same location as he/she planted.
+
+mysql> SELECT name FROM gardener WHERE gardenerid IN (SELECT gardenerFK FROM planted WHERE gardenerFK IN (SELECT gardenerFK FROM picked));
++--------+
+| name   |
++--------+
+| Father |
+| Tim    |
+| Erin   |
++--------+
+3 rows in set (0.00 sec)
+
+***********************************************************************************************************************************************************************
+
+10. Create a view that lists all the plant names picked from all locations except ’West’ in the month of August.
+
+mysql> SELECT * FROM Plants_Picked;
++--------+
+| name   |
++--------+
+| Radish |
++--------+
+1 row in set (0.00 sec)
