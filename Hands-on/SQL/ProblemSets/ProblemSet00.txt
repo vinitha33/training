@@ -8,14 +8,43 @@ Database changed
 
 ---------TABLE CREATION-------------------
 
-mysql> CREATE TABLE employee(e_id VARCHAR(5),name VARCHAR(20),dep_id VARCHAR(5),salary INT,manager_id varchar(10));
-Query OK, 0 rows affected (0.34 sec)
+mysql> CREATE TABLE dept(dep_id VARCHAR(10) PRIMARY KEY,dep_name VARCHAR(20),dep_manager VARCHAR(20));
 
-mysql> CREATE TABLE dept(dep_id VARCHAR(5),dep_name VARCHAR(20),dep_manager VARCHAR(20));
-Query OK, 0 rows affected (0.51 sec)
+mysql> CREATE TABLE employee(e_id VARCHAR(10) PRIMARY KEY,name VARCHAR(20),dep_id VARCHAR(10),salary INT,manager_id VARCHAR(20), FOREIGN KEY employee(dep_id) REFERENCES dept(dep_id));
 
 
 ---------VALUE INSERTION-----------------
+
+
+mysql> INSERT INTO dept(dep_id,dep_name,dep_manager) VALUES ('D01','Health','Tim Archer');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO dept(dep_id,dep_name,dep_manager) VALUES ('D02','Communications','Adam Justin');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO dept(dep_id,dep_name,dep_manager) VALUES ('D03','Product','Bruce Wills');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO dept(dep_id,dep_name,dep_manager) VALUES ('D04','Insurance','Robert Swift');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO dept(dep_id,dep_name,dep_manager) VALUES ('D05','Finance','Natasha Stevens');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> SELECT * FROM dept;
++--------+----------------+-----------------+
+| dep_id | dep_name       | dep_manager     |
++--------+----------------+-----------------+
+| D01    | Health         | Tim Archer      |
+| D02    | Communications | Adam Justin     |
+| D03    | Product        | Bruce Wills     |
+| D04    | Insurance      | Robert Swift    |
+| D05    | Finance        | Natasha Stevens |
++--------+----------------+-----------------+
+5 rows in set (0.00 sec)
+
+
+
 
 mysql> INSERT INTO employee VALUES('A114','Martin Tredeau','D01',54497,'A120');
 Query OK, 1 row affected (0.24 sec)
@@ -105,76 +134,39 @@ mysql> SELECT * FROM employee;
 20 rows in set (0.00 sec)
 
 
-
-mysql> INSERT INTO dept VALUES('D01','Health','Tim Archer');
-Query OK, 1 row affected (0.10 sec)
-
-mysql> INSERT INTO dept VALUES('D02','Communications','Adam Justin');
-Query OK, 1 row affected (0.09 sec)
-
-mysql> INSERT INTO dept VALUES('D03','Product','Bruce Wills');
-Query OK, 1 row affected (0.10 sec)
-
-mysql> INSERT INTO dept VALUES('D04','Insurance','Robert Swift');
-Query OK, 1 row affected (0.25 sec)
-
-mysql> INSERT INTO dept VALUES('D05','Finance','Natasha Stevens');
-Query OK, 1 row affected (0.08 sec)
-
-
-mysql> SELECT * FROM dept;
-+--------+----------------+-----------------+
-| dep_id | dep_name       | dep_manager     |
-+--------+----------------+-----------------+
-| D01    | Health         | Tim Archer      |
-| D02    | Communications | Adam Justin     |
-| D03    | Product        | Bruce Wills     |
-| D04    | Insurance      | Robert Swift    |
-| D05    | Finance        | Natasha Stevens |
-+--------+----------------+-----------------+
-5 rows in set (0.00 sec)
-
-
 -------------------------------QUERIES--------------------------------------------
 
 
 1)Select the Employee with the top three salaries
 
-mysql> SELECT salary FROM employee ORDER BY salary desc LIMIT 3;
-+--------+
-| salary |
-+--------+
-|  99475 |
-|  94791 |
-|  94324 |
-+--------+
+mysql> SELECT name,salary FROM employee ORDER BY salary DESC LIMIT 3;
++---------------+--------+
+| name          | salary |
++---------------+--------+
+| Tara Cummings |  99475 |
+| Paul Vincent  |  94791 |
+| Adam Wayne    |  94324 |
++---------------+--------+
 3 rows in set (0.00 sec)
 
 ***********************************************************************
 
 2)Select the Employee with the least salary
 
-mysql> SELECT MIN(salary) FROM employee;
+mysql> SELECT name FROM employee WHERE salary IN (SELECT MIN(salary) FROM employee);
 +-------------+
-| MIN(salary) |
+| name        |
 +-------------+
-|       15380 |
+| John Hellen |
 +-------------+
-1 row in set (0.00 sec)
+1 row in set (0.04 sec)
 
 
 ***********************************************************************
 
 3)Select the Employee who does not have a manager in the department table
 
-mysql> SELECT name FROM employee WHERE dep_id NOT IN (SELECT dep_id FROM dept);
-Empty set (0.00 sec)
-
-***********************************************************************
-
-4)Select the Employee who is also a Manager
-
-mysql> SELECT name FROM employee e, dept d WHERE e.name=d.dep_manager;
+mysql> SELECT name FROM employee WHERE manager_id NOT IN(SELECT e_id FROM employee e,dept d WHERE e.name=d.dep_manager);
 +-----------------+
 | name            |
 +-----------------+
@@ -188,9 +180,25 @@ mysql> SELECT name FROM employee e, dept d WHERE e.name=d.dep_manager;
 
 ***********************************************************************
 
+4)Select the Employee who is also a Manager
+
+mysql> SELECT name FROM employee JOIN dept ON employee.dep_id=dept.dep_id WHERE name=dep_manager;
++-----------------+
+| name            |
++-----------------+
+| Tim Archer      |
+| Adam Justin     |
+| Bruce Wills     |
+| Robert Swift    |
+| Natasha Stevens |
++-----------------+
+5 rows in set (0.00 sec)
+
+***********************************************************************
+
 5)Select the Empolyee who is a Manager and has least salary
 
-mysql> SELECT name,MIN(salary) FROM employee WHERE name IN(SELECT dep_manager FROM dept);
+mysql> SELECT name,MIN(salary) FROM employee WHERE name IN (SELECT dep_manager FROM dept);
 +-------------+-------------+
 | name        | MIN(salary) |
 +-------------+-------------+
@@ -202,9 +210,9 @@ mysql> SELECT name,MIN(salary) FROM employee WHERE name IN(SELECT dep_manager FR
 
 6)Select the total number of Employees in Communications departments
 
-mysql> SELECT count(e_id) FROM employee WHERE dep_id IN(SELECT dep_id FROM dept WHERE dep_name = 'Communications');
+mysql> SELECT COUNT(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_name="Communications";
 +-------------+
-| count(e_id) |
+| COUNT(e_id) |
 +-------------+
 |           6 |
 +-------------+
@@ -223,60 +231,69 @@ mysql> SELECT name, MAX(salary) FROM employee WHERE dep_id IN(SELECT dep_id FROM
 +------------+-------------+
 1 row in set (0.00 sec)
 
+"OR"
+
+mysql> SELECT name FROM employee WHERE salary IN(SELECT MAX(salary) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_name="Finance");
++------------+
+| name       |
++------------+
+| Adam Wayne |
++------------+
+1 row in set (0.00 sec)
+
 
 ***********************************************************************
 
 8)Select the Employee in product depatment who has the least salary
 
-mysql> SELECT name, MIN(salary) FROM employee WHERE dep_id IN(SELECT dep_id FROM dept WHERE dep_name = 'Product');
-+-------------+-------------+
-| name        | MIN(salary) |
-+-------------+-------------+
-| Bruce Wills |       50174 |
-+-------------+-------------+
+mysql> SELECT name FROM employee WHERE salary IN (SELECT MIN(salary) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_name="Product");
++-------------+
+| name        |
++-------------+
+| Nick Martin |
++-------------+
 1 row in set (0.00 sec)
 
 ***********************************************************************
 
 9)Select the count of Empolyees in Health with maximum salary
 
-mysql>  SELECT count(e_id),salary FROM employee JOIN dept ON employee.dep_id=dept.dep_id WHERE salary = (SELECT max(salary) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_name="Health");
-+-------------+--------+
-| count(e_id) | salary |
-+-------------+--------+
-|           1 |  94791 |
-+-------------+--------+
+mysql> SELECT COUNT(e_id) FROM employee WHERE salary IN(SELECT MAX(salary) FROM employee JOIN dept ON employee.dep_id=dept.dep_id WHERE dep_name="Health");
++-------------+
+| COUNT(e_id) |
++-------------+
+|           1 |
++-------------+
 1 row in set (0.00 sec)
 
 ***********************************************************************
 
 10)Select the Employees who report to Natasha Stevens
 
-mysql> SELECT name FROM employee WHERE dep_id IN (SELECT dep_id FROM dept WHERE dep_manager='Natasha Stevens');
-+-----------------+
-| name            |
-+-----------------+
-| Adam Wayne      |
-| Joseph Angelin  |
-| Natasha Stevens |
-+-----------------+
-3 rows in set (0.00 sec)
+mysql> SELECT name FROM employee WHERE manager_id IN (SELECT e_id FROM employee WHERE dep_id IN (SELECT dep_id FROM dept WHERE dep_manager="Natasha Stevens"));
++----------------+
+| name           |
++----------------+
+| Adam Wayne     |
+| Joseph Angelin |
++----------------+
+2 rows in set (0.00 sec)
 
 ***********************************************************************
 
 11)Display the Employee name,Employee count,Dep name,Dept manager in the Health department
 
-mysql> SELECT e.name,d.dep_name,d.dep_manager FROM employee e, dept d WHERE d.dep_name='Health' AND e.dep_id=d.dep_id;
-+----------------+----------+-------------+
-| name           | dep_name | dep_manager |
-+----------------+----------+-------------+
-| Martin Tredeau | Health   | Tim Archer  |
-| Paul Vincent   | Health   | Tim Archer  |
-| Tim Archer     | Health   | Tim Archer  |
-| Brad Michael   | Health   | Tim Archer  |
-| Edward Cane    | Health   | Tim Archer  |
-| John Hellen    | Health   | Tim Archer  |
-+----------------+----------+-------------+
+mysql> SELECT e.name,COUNT(e.e_id) AS "No_of_employees",d.dep_name,d.dep_manager FROM employee e,dept d WHERE e.dep_id = d.dep_id AND d.dep_name="Health";
++----------------+-----------------+----------+-------------+
+| name           | No_of_employees | dep_name | dep_manager |
++----------------+-----------------+----------+-------------+
+| Brad Michael   |               1 | Health   | Tim Archer  |
+| Edward Cane    |               1 | Health   | Tim Archer  |
+| John Hellen    |               1 | Health   | Tim Archer  |
+| Martin Tredeau |               1 | Health   | Tim Archer  |
+| Paul Vincent   |               1 | Health   | Tim Archer  |
+| Tim Archer     |               1 | Health   | Tim Archer  |
++----------------+-----------------+----------+-------------+
 6 rows in set (0.00 sec)
 
 
@@ -284,7 +301,7 @@ mysql> SELECT e.name,d.dep_name,d.dep_manager FROM employee e, dept d WHERE d.de
 
 12)Display the Department id,Employee ids and Manager ids for the Communications department
 
-mysql> SELECT e.dep_id,e.e_id,e.manager_id FROM employee e, dept d WHERE dep_name='Communications' AND e.dep_id=d.dep_id;
+mysql> SELECT e.dep_id,e.e_id,e.manager_id FROM employee e JOIN dept d ON e.dep_id=d.dep_id WHERE d.dep_name="Communications";
 +--------+------+------------+
 | dep_id | e_id | manager_id |
 +--------+------+------------+
@@ -302,40 +319,40 @@ mysql> SELECT e.dep_id,e.e_id,e.manager_id FROM employee e, dept d WHERE dep_nam
 
 13)Select the Average Expenses for Each dept with Dept id and Dept name
 
-mysql> SELECT e.dep_id,d.dep_name,AVG(e.salary) FROM employee e, dept d WHERE e.dep_id=d.dep_id GROUP BY d.dep_name;
-+--------+----------------+---------------+
-| dep_id | dep_name       | AVG(e.salary) |
-+--------+----------------+---------------+
-| D01    | Health         |    54527.6667 |
-| D02    | Communications |    48271.3333 |
-| D03    | Product        |    58517.5000 |
-| D04    | Insurance      |    51913.3333 |
-| D05    | Finance        |    56660.3333 |
-+--------+----------------+---------------+
+mysql> SELECT AVG(salary) AS "AVERAGE EXPENSE",e.dep_id,d.dep_name FROM employee e,dept d WHERE e.dep_id=d.dep_id GROUP BY d.dep_name;
++-----------------+--------+----------------+
+| AVERAGE EXPENSE | dep_id | dep_name       |
++-----------------+--------+----------------+
+|      48271.3333 | D02    | Communications |
+|      56660.3333 | D05    | Finance        |
+|      54527.6667 | D01    | Health         |
+|      51913.3333 | D04    | Insurance      |
+|      58517.5000 | D03    | Product        |
++-----------------+--------+----------------+
 5 rows in set (0.00 sec)
 
 ***********************************************************************
 
 14)Select the total expense for the department finance
 
-mysql> SELECT sum(e.salary) FROM employee e, dept d WHERE e.dep_id=d.dep_id AND d.dep_name='Finance';
-+---------------+
-| sum(e.salary) |
-+---------------+
-|        169981 |
-+---------------+
+mysql> SELECT SUM(salary) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_name="Finance";
++-------------+
+| SUM(salary) |
++-------------+
+|      169981 |
++-------------+
 1 row in set (0.00 sec)
 
 ***********************************************************************
 
 15)Select the department which spends the least with Dept id and Dept manager name
 
-mysql> SELECT d.dep_name,d.dep_id,dep_manager FROM dept d,employee e WHERE e.dep_id=d.dep_id AND e.salary IN (SELECT MIN(salary) FROM employee);
-+----------+--------+-------------+
-| dep_name | dep_id | dep_manager |
-+----------+--------+-------------+
-| Health   | D01    | Tim Archer  |
-+----------+--------+-------------+
+mysql> SELECT AVG(salary) AS "AVERAGE EXPENSE",e.dep_id,d.dep_name,dep_manager FROM employee e,dept d WHERE e.dep_id=d.dep_id GROUP BY d.dep_name LIMIT 1;
++-----------------+--------+----------------+-------------+
+| AVERAGE EXPENSE | dep_id | dep_name       | dep_manager |
++-----------------+--------+----------------+-------------+
+|      48271.3333 | D02    | Communications | Adam Justin |
++-----------------+--------+----------------+-------------+
 1 row in set (0.00 sec)
 
 
@@ -344,30 +361,30 @@ mysql> SELECT d.dep_name,d.dep_id,dep_manager FROM dept d,employee e WHERE e.dep
 
 16)Select the count of Employees in each department
 
-mysql> SELECT dep_name,count(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id GROUP BY d.dep_name;
-+----------------+-------------+
-| dep_name       | count(e_id) |
-+----------------+-------------+
-| Health         |           6 |
-| Communications |           6 |
-| Product        |           2 |
-| Insurance      |           3 |
-| Finance        |           3 |
-+----------------+-------------+
+mysql> SELECT dep_name,COUNT(e_id) AS "No of employees" FROM employee e,dept d WHERE e.dep_id=d.dep_id GROUP BY dep_name;
++----------------+-----------------+
+| dep_name       | No of employees |
++----------------+-----------------+
+| Communications |               6 |
+| Finance        |               3 |
+| Health         |               6 |
+| Insurance      |               3 |
+| Product        |               2 |
++----------------+-----------------+
 5 rows in set (0.00 sec)
 
 ***********************************************************************
 
 17)Select the count of Employees in each department having salary <10000
 
-mysql> SELECT dep_name,count(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND e.salary < 10000 GROUP BY d.dep_name;
+mysql> SELECT dep_name,COUNT(e_id) AS "No of employees" FROM employee e,dept d WHERE e.dep_id=d.dep_id AND salary<10000 GROUP BY dep_name;
 Empty set (0.00 sec)
 
 ***********************************************************************
 
 18)Select the total number of Employees in Dept id D04
 
-mysql> SELECT COUNT(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_id='D04';
+mysql> SELECT COUNT(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_id="D04";
 +-------------+
 | COUNT(e_id) |
 +-------------+
@@ -380,20 +397,21 @@ mysql> SELECT COUNT(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.d
 
 19)Select all department details of the Department with Maximum Employees
 
-mysql> select max(e_id),dep_name from (select count(e_id) e_id from employee group by dep_id) as e,dept;
-+-----------+----------+
-| max(e_id) | dep_name |
-+-----------+----------+
-|         6 | Health   |
-+-----------+----------+
-1 row in set (0.04 sec)
+mysql> SELECT e.dep_id,dep_name,dep_manager,COUNT(*) AS EmployeeCount FROM employee e JOIN dept d ON e.dep_id=d.dep_id GROUP BY dep_id HAVING COUNT(*)=(SELECT COUNT(*) FROM employee GROUP BY dep_id ORDER BY COUNT(*) DESC LIMIT 1);
++--------+----------------+-------------+---------------+
+| dep_id | dep_name       | dep_manager | EmployeeCount |
++--------+----------------+-------------+---------------+
+| D01    | Health         | Tim Archer  |             6 |
+| D02    | Communications | Adam Justin |             6 |
++--------+----------------+-------------+---------------+
+2 rows in set (0.00 sec)
 
 
 ***********************************************************************
 
 20)Select the Employees who has Tim Cook as their manager
 
-mysql> SELECT name FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_manager="TIM COOK";
+mysql> SELECT name FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.dep_manager="Tim Cook";
 Empty set (0.00 sec)
 
 ***********************************************************************
