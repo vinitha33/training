@@ -397,12 +397,12 @@ mysql> SELECT COUNT(e_id) FROM employee e,dept d WHERE e.dep_id=d.dep_id AND d.d
 
 19)Select all department details of the Department with Maximum Employees
 
-mysql> SELECT e.dep_id,dep_name,dep_manager,COUNT(*) AS EmployeeCount FROM employee e JOIN dept d ON e.dep_id=d.dep_id GROUP BY dep_id HAVING COUNT(*)=(SELECT COUNT(*) FROM employee GROUP BY dep_id ORDER BY COUNT(*) DESC LIMIT 1);
+mysql>  SELECT e.dep_id,dep_name,dep_manager,COUNT(*) AS employeecount FROM employee e JOIN dept d ON e.dep_id=d.dep_id GROUP BY dep_name HAVING COUNT(e.dep_id)=(SELECT COUNT(e.dep_id) AS "a" FROM employee e,dept d WHERE e.dep_id=d.dep_id GROUP BY dep_name ORDER BY COUNT(e.dep_id) DESC LIMIT 1);
 +--------+----------------+-------------+---------------+
-| dep_id | dep_name       | dep_manager | EmployeeCount |
+| dep_id | dep_name       | dep_manager | employeecount |
 +--------+----------------+-------------+---------------+
-| D01    | Health         | Tim Archer  |             6 |
 | D02    | Communications | Adam Justin |             6 |
+| D01    | Health         | Tim Archer  |             6 |
 +--------+----------------+-------------+---------------+
 2 rows in set (0.00 sec)
 
