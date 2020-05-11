@@ -1,56 +1,128 @@
 ---------DATABASE CREATION----------------
 
 mysql> CREATE DATABASE problemset03;
-Query OK, 1 row affected (0.16 sec)
+Query OK, 1 row affected (0.07 sec)
 
 mysql> USE problemset03;
 Database changed
 
 ---------TABLE CREATION-------------------
 
-mysql> CREATE TABLE Movie(mID INT PRIMARY KEY,title VARCHAR(30),year INT,director VARCHAR(20));
-Query OK, 0 rows affected (0.88 sec)
+mysql> CREATE TABLE movie (mID INT PRIMARY KEY,title VARCHAR(30),year INT,director VARCHAR(20));
+Query OK, 0 rows affected (0.28 sec)
 
-mysql> CREATE TABLE Reviewer(rID INT PRIMARY KEY,name VARCHAR(20));
-Query OK, 0 rows affected (0.43 sec)
+mysql> CREATE TABLE reviewer (rID INT PRIMARY KEY,name VARCHAR(30));
+Query OK, 0 rows affected (0.09 sec)
 
-mysql> CREATE TABLE Rating(rID INT,mID INT,stars INT,ratingDate DATE,FOREIGN KEY(rID) REFERENCES Reviewer(rID), FOREIGN KEY(mID) REFERENCES Movie(mID));
-Query OK, 0 rows affected (0.94 sec)
+mysql> CREATE TABLE rating(rID INT, mID INT, stars INT,ratingDate date, FOREIGN KEY(rID) REFERENCES reviewer(rID),FOREIGN KEY(mID) REFERENCES movie(mID));
+Query OK, 0 rows affected (0.20 sec)
 
 
 ---------VALUE INSERTION------------------
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (101,'Gone with the Wind',1939,'Victor Fleming');
-Query OK, 1 row affected (0.08 sec)
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (101,"Gone with the wild",1939,"Victor Fleming");
+Query OK, 1 row affected (0.13 sec)
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (102,'Star Wars',1977,'George Lucas');
-Query OK, 1 row affected (0.11 sec)
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (102,"Star Wars",1977,"George Lucas");
+Query OK, 1 row affected (0.04 sec)
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (103,'The sound of music',1965,'Robert Wise');
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (103,"The Sound Of Music",1965,"Robert Wise");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (104,"E.T.",1982,"Steven Spielberg");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (105,"Titanic",1997,"James Cameron");
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO movie(mID,title,year) VALUES (106,"Snow White",1937);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (107,"Avatar",2009,"James Cameron");
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO movie(mID,title,year,director) VALUES (108,"Raiders of the Lost Ark",1981,"Steven Spielberg");
+Query OK, 1 row affected (0.03 sec)
+
+
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (201,"Sarah Martinez");
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (202,"Daniel Lewis");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (203,"Britanny Harris");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (204,"Mike Anderson");
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (205,"Chris Jackson");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (206,"Elizabeth Thomas");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (207,"James Cameron");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO reviewer(rID,name) VALUES (208,"Ashley White");
+Query OK, 1 row affected (0.03 sec)
+
+
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (201,101,2,'20110122');
 Query OK, 1 row affected (0.09 sec)
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (104,'E.T.',1982,'Steven Spielberg');
-Query OK, 1 row affected (0.12 sec)
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (201,101,4,'20110127');
+Query OK, 1 row affected (0.04 sec)
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (105,'Titanic',1997,'James Cameron');
-Query OK, 1 row affected (0.08 sec)
+mysql> INSERT INTO Rating(rId,mId,stars) VALUES (202,106,4);
+Query OK, 1 row affected (0.04 sec)
 
-mysql> INSERT INTO Movie(mID,title,year) VALUES (106,'Snow White',1937);
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (203,103,2,'20110120');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (203,108,4,'20110112');
 Query OK, 1 row affected (0.09 sec)
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (107,'Avatar',2009,'James Cameron');
-Query OK, 1 row affected (0.12 sec)
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (203,108,2,'20110130');
+Query OK, 1 row affected (0.04 sec)
 
-mysql> INSERT INTO Movie(mID,title,year,director) VALUES (108,'Raiders of the Lost Ark',1981,'Steven Spielberg');
-Query OK, 1 row affected (0.11 sec)
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (204,101,3,'20110109');
+Query OK, 1 row affected (0.07 sec)
 
-mysql> SELECT * FROM Movie;
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (205,103,3,'20110127');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (205,104,2,'20110122');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars) VALUES (205,108,4);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (206,107,3,'20110115');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (206,106,5,'20110119');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (207,107,5,'20110120');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (208,104,3,'20110102');
+Query OK, 1 row affected (0.06 sec)
+
+
+
+mysql> SELECT * FROM movie;
 +-----+-------------------------+------+------------------+
 | mID | title                   | year | director         |
 +-----+-------------------------+------+------------------+
-| 101 | Gone with the Wind      | 1939 | Victor Fleming   |
+| 101 | Gone with the wild      | 1939 | Victor Fleming   |
 | 102 | Star Wars               | 1977 | George Lucas     |
-| 103 | The sound of music      | 1965 | Robert Wise      |
+| 103 | The Sound Of Music      | 1965 | Robert Wise      |
 | 104 | E.T.                    | 1982 | Steven Spielberg |
 | 105 | Titanic                 | 1997 | James Cameron    |
 | 106 | Snow White              | 1937 | NULL             |
@@ -60,39 +132,13 @@ mysql> SELECT * FROM Movie;
 8 rows in set (0.00 sec)
 
 
-
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (201,'Sarah Martinez');
-Query OK, 1 row affected (0.20 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (202,'Daniel Lewis');
-Query OK, 1 row affected (0.10 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (203,'Brittany Harris');
-Query OK, 1 row affected (0.07 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (204,'Mike Anderson');
-Query OK, 1 row affected (0.13 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (205,'Chris Jackson');
-Query OK, 1 row affected (0.17 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (206,'Elizabeth Thomas');
-Query OK, 1 row affected (0.15 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (207,'James Cameron');
-Query OK, 1 row affected (0.08 sec)
-
-mysql> INSERT INTO Reviewer(rID,name) VALUES (208,'Ashley White');
-Query OK, 1 row affected (0.14 sec)
-
-mysql> SELECT * FROM Reviewer;
+mysql> SELECT * FROM reviewer;
 +-----+------------------+
 | rID | name             |
 +-----+------------------+
 | 201 | Sarah Martinez   |
 | 202 | Daniel Lewis     |
-| 203 | Brittany Harris  |
+| 203 | Britanny Harris  |
 | 204 | Mike Anderson    |
 | 205 | Chris Jackson    |
 | 206 | Elizabeth Thomas |
@@ -102,54 +148,7 @@ mysql> SELECT * FROM Reviewer;
 8 rows in set (0.00 sec)
 
 
-
-
-
-mysql>  INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (201,101,2,'20110122');
-Query OK, 1 row affected (0.36 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (201,101,4,'20110127');
-Query OK, 1 row affected (0.17 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars) VALUES (202,106,4);
-Query OK, 1 row affected (0.13 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (203,103,2,'20110120');
-Query OK, 1 row affected (0.07 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (203,108,4,'20110112');
-Query OK, 1 row affected (0.06 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (203,108,2,'20110130');
-Query OK, 1 row affected (0.18 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (204,101,3,'20110109');
-Query OK, 1 row affected (0.09 sec)
-
-mysql> INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (205,103,3,'20110127');
-Query OK, 1 row affected (0.11 sec)
-
-mysql>  INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (205,104,2,'20110122');
-Query OK, 1 row affected (0.05 sec)
-
-mysql>  INSERT INTO Rating(rId,mId,stars) VALUES (205,108,4);
-Query OK, 1 row affected (0.14 sec)
-
-mysql>  INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (206,107,3,'20110115');
-Query OK, 1 row affected (0.06 sec)
-
-mysql>  INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (206,106,5,'20110119');
-Query OK, 1 row affected (0.11 sec)
-
-mysql>  INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (207,107,5,'20110120');
-Query OK, 1 row affected (0.12 sec)
-
-mysql>  INSERT INTO Rating(rId,mId,stars,ratingDate) VALUES (208,104,3,'20110102');
-Query OK, 1 row affected (0.16 sec)
-
-
-
-mysql> SELECT * FROM Rating;
+mysql> SELECT * FROM rating;
 +------+------+-------+------------+
 | rID  | mID  | stars | ratingDate |
 +------+------+-------+------------+
@@ -169,6 +168,8 @@ mysql> SELECT * FROM Rating;
 |  208 |  104 |     3 | 2011-01-02 |
 +------+------+-------+------------+
 14 rows in set (0.00 sec)
+
+
 
 
 -------------------------------QUERIES--------------------------------------------
