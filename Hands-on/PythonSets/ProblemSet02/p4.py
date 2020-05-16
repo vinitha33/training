@@ -1,9 +1,13 @@
-num = 10011
-b = 0
+num = int(input("Enter the number:"))
 i = 0
-while(num):
-    ld = num % 10
-    num = int(num / 10)
-    b = b + ld * (2 ** i)
+final = 0
+while num > 0:
+    rem = num%10
+    num = round(num/10)
+    digit = pow(2,i) * rem
+    final = final + digit
     i = i + 1
-print(b)
+print(final)
+
+
+
