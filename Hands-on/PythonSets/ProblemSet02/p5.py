@@ -1,10 +1,9 @@
-def sum_digits(str1):
-    digitsum = 0
-    for i in str1:
+def sumDigits(s):
+    digit_sum = 0
+    for i in s:
         try:
-            digitsum += int(i)
-            print(digitsum)
+            digit_sum += int(i)
         except ValueError:
             pass
-
-sum_digits("a1b2c3")
+    return digit_sum
+print(sumDigits(input("Enter the string:")))
